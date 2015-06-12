@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/SpotifyActionBar</item>
+        <item name="android:background">@color/results_background</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/SpotifyActionBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="SpotifyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/action_bar_background</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/action_bar_background</item>
+    </style>
+
+</resources>

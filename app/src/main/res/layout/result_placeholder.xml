@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/result_placeholder_icon"
+        android:layout_width="@dimen/result_placeholder_image_size"
+        android:layout_height="@dimen/result_placeholder_image_size"
+        android:layout_marginTop="@dimen/result_placeholder_image_top_margin"
+        android:src="@drawable/cat_placeholder_search" />
+
+    <TextView
+        android:id="@+id/result_placeholder_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/result_placeholder_title_top_margin"
+        android:gravity="center"
+        android:paddingLeft="@dimen/result_placeholder_text_horizontal_padding"
+        android:paddingRight="@dimen/result_placeholder_text_horizontal_padding"
+        android:text="@string/result_placeholder_search_title"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/result_placeholder_title_text_size" />
+
+    <TextView
+        android:id="@+id/result_placeholder_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/result_placeholder_subtitle_top_margin"
+        android:gravity="center"
+        android:paddingLeft="@dimen/result_placeholder_text_horizontal_padding"
+        android:paddingRight="@dimen/result_placeholder_text_horizontal_padding"
+        android:text="@string/result_placeholder_search_subtitle"
+        android:textColor="@color/subtitle_color" />
+
+</LinearLayout>

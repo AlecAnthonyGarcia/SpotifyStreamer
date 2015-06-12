@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Spotify Streamer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="activity_top_tracks_title">Top 10 Tracks</string>
+
+    <string name="result_placeholder_search_title">Find your favorite music</string>
+    <string name="result_placeholder_search_subtitle">Search for artists to play their Top 10 Tracks.</string>
+    <string name="result_placeholder_no_results_title">No results found for</string>
+    <string name="result_placeholder_no_results_subtitle">Please check you have the right spelling, or try different keywords.</string>
+    <string name="result_placeholder_no_top_tracks_title">No Top Tracks were found</string>
+
+    <string name="tools_text_results_artist_name">Artist Name</string>
+    <string name="tools_text_results_track_name">Track Name</string>
+    <string name="tools_text_results_album_name">Album Name</string>
+</resources>

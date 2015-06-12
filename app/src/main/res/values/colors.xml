@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="action_bar_background">#222326</color>
+    <color name="results_background">#121314</color>
+    <color name="results_divider">#2e2f33</color>
+    <color name="subtitle_color">#bdbdbe</color>
+</resources>

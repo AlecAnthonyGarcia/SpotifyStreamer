@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListView
+        android:id="@+id/listview_top_tracks_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/results_divider"
+        android:dividerHeight="@dimen/results_divider_height" />
+
+    <FrameLayout
+        android:id="@+id/results_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/result_placeholder" />
+
+    </FrameLayout>
+
+</merge>
