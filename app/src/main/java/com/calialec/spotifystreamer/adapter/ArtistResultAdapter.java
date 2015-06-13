@@ -9,13 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.calialec.spotifystreamer.R;
+import com.calialec.spotifystreamer.model.ArtistParcelable;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Artist;
-
-public class ArtistResultAdapter extends ArrayAdapter<Artist> {
+public class ArtistResultAdapter extends ArrayAdapter<ArtistParcelable> {
 
     final private Context context;
 
@@ -24,14 +23,14 @@ public class ArtistResultAdapter extends ArrayAdapter<Artist> {
         TextView artistName;
     }
 
-    public ArtistResultAdapter(Context context, List<Artist> artists) {
+    public ArtistResultAdapter(Context context, List<ArtistParcelable> artists) {
         super(context, R.layout.list_item_artist_result, artists);
         this.context = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Artist artist = getItem(position);
+        ArtistParcelable artist = getItem(position);
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -43,9 +42,9 @@ public class ArtistResultAdapter extends ArrayAdapter<Artist> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        // Load first available image from images array if it exists
-        if (artist.images.size() > 0) {
-            Picasso.with(context).load(artist.images.get(0).url).into(viewHolder.artistImage);
+
+        if (artist.imageUrl != null) {
+            Picasso.with(context).load(artist.imageUrl).into(viewHolder.artistImage);
         }
         viewHolder.artistName.setText(artist.name);
         return convertView;

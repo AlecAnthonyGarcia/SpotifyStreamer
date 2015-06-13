@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.calialec.spotifystreamer.adapter.ArtistResultAdapter;
+import com.calialec.spotifystreamer.model.ArtistParcelable;
 import com.calialec.spotifystreamer.util.ViewUtil;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static final String SAVED_STATE_ARTIST_LIST = "savedStateArtistList";
     public static final String EXTRA_ARTIST_ID = "com.calialec.spotifystreamer.EXTRA_ARTIST_ID";
     public static final String EXTRA_ARTIST_NAME = "com.calialec.spotifystreamer.EXTRA_ARTIST_NAME";
 
@@ -42,6 +44,8 @@ public class MainActivity extends ActionBarActivity {
     private ImageView clearArtistResults;
     private ArrayAdapter artistResultsAdapter;
 
+    private ArrayList<ArtistParcelable> artistList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,14 +53,21 @@ public class MainActivity extends ActionBarActivity {
 
         resultsPlaceholder = (FrameLayout) findViewById(R.id.results_placeholder);
 
-        artistResultsAdapter = new ArtistResultAdapter(this, new ArrayList<Artist>());
+        if (savedInstanceState != null) {
+            artistList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARTIST_LIST);
+            ViewUtil.initResultsPlaceholder(resultsPlaceholder, false, -1);
+        } else {
+            artistList = new ArrayList<>();
+        }
+
+        artistResultsAdapter = new ArtistResultAdapter(this, artistList);
         final ListView artistResults = (ListView) findViewById(R.id.listview_artist_results);
         artistResults.setAdapter(artistResultsAdapter);
         artistResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get the selected artist and start the activity to show the Top 10 Tracks
-                Artist artist = (Artist) artistResultsAdapter.getItem(position);
+                ArtistParcelable artist = (ArtistParcelable) artistResultsAdapter.getItem(position);
                 Intent topTracksIntent = new Intent(getApplicationContext(), TopTracksActivity.class);
                 topTracksIntent.putExtra(EXTRA_ARTIST_ID, artist.id);
                 topTracksIntent.putExtra(EXTRA_ARTIST_NAME, artist.name);
@@ -115,6 +126,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -151,7 +167,10 @@ public class MainActivity extends ActionBarActivity {
                         if (artists.isEmpty()) {
                             ViewUtil.initResultsPlaceholder(resultsPlaceholder, true, ViewUtil.PLACEHOLDER_TYPE_NO_RESULTS);
                         } else {
-                            artistResultsAdapter.addAll(artists);
+                            for (Artist artist : artists) {
+                                artistList.add(new ArtistParcelable(artist));
+                            }
+                            artistResultsAdapter.addAll(artistList);
                             ViewUtil.initResultsPlaceholder(resultsPlaceholder, false, -1);
                         }
                     }
@@ -170,4 +189,9 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(SAVED_STATE_ARTIST_LIST, artistList);
+        super.onSaveInstanceState(outState);
+    }
 }

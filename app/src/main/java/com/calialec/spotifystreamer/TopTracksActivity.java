@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.calialec.spotifystreamer.adapter.TopTracksResultAdapter;
+import com.calialec.spotifystreamer.model.TrackParcelable;
 import com.calialec.spotifystreamer.util.ViewUtil;
 
 import java.util.ArrayList;
@@ -28,8 +29,12 @@ import retrofit.client.Response;
 
 public class TopTracksActivity extends ActionBarActivity {
 
+    public static final String SAVED_STATE_TOP_TRACKS_LIST = "savedStateTopTracksList";
+
     private FrameLayout resultsPlaceholder;
     private ArrayAdapter topTracksResultsAdapter;
+
+    private ArrayList<TrackParcelable> topTracksList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +56,23 @@ public class TopTracksActivity extends ActionBarActivity {
             actionBar.setSubtitle(name);
         }
 
+        if (savedInstanceState != null) {
+            topTracksList = savedInstanceState.getParcelableArrayList(SAVED_STATE_TOP_TRACKS_LIST);
+        } else {
+            topTracksList = new ArrayList<>();
+        }
+
         resultsPlaceholder = (FrameLayout) findViewById(R.id.results_placeholder);
 
-        topTracksResultsAdapter = new TopTracksResultAdapter(this, new ArrayList<Track>());
+        topTracksResultsAdapter = new TopTracksResultAdapter(this, topTracksList);
         ListView artistResults = (ListView) findViewById(R.id.listview_top_tracks_results);
         artistResults.setAdapter(topTracksResultsAdapter);
 
-        // Fetch the artist's Top Tracks
-        fetchTopTracksResults(id);
+        if (savedInstanceState == null) {
+            // Fetch the artist's Top Tracks
+            fetchTopTracksResults(id);
+        }
+
     }
 
     @Override
@@ -99,7 +113,10 @@ public class TopTracksActivity extends ActionBarActivity {
                         if (tracksList.isEmpty()) {
                             ViewUtil.initResultsPlaceholder(resultsPlaceholder, true, ViewUtil.PLACEHOLDER_TYPE_NO_TOP_TRACKS);
                         } else {
-                            topTracksResultsAdapter.addAll(tracksList);
+                            for (Track track : tracksList) {
+                                topTracksList.add(new TrackParcelable(track));
+                            }
+                            topTracksResultsAdapter.addAll(topTracksList);
                         }
                     }
                 });
@@ -115,6 +132,12 @@ public class TopTracksActivity extends ActionBarActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(SAVED_STATE_TOP_TRACKS_LIST, topTracksList);
+        super.onSaveInstanceState(outState);
     }
 
 }
