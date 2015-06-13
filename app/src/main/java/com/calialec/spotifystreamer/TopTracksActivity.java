@@ -1,6 +1,5 @@
 package com.calialec.spotifystreamer;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +22,9 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class TopTracksActivity extends ActionBarActivity {
 
@@ -55,7 +57,8 @@ public class TopTracksActivity extends ActionBarActivity {
         ListView artistResults = (ListView) findViewById(R.id.listview_top_tracks_results);
         artistResults.setAdapter(topTracksResultsAdapter);
 
-        new FetchTopTracksResultsTask().execute(id);
+        // Fetch the artist's Top Tracks
+        fetchTopTracksResults(id);
     }
 
     @Override
@@ -80,28 +83,38 @@ public class TopTracksActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class FetchTopTracksResultsTask extends AsyncTask<String, Void, List<Track>> {
-
-        @Override
-        protected List<Track> doInBackground(String... params) {
-            // Fetch the artist's Top Tracks
-            SpotifyApi api = new SpotifyApi();
-            SpotifyService spotify = api.getService();
-            Map<String, Object> options = new HashMap<>();
-            options.put(SpotifyService.COUNTRY, Locale.getDefault().getCountry());
-            Tracks results = spotify.getArtistTopTrack(params[0], options);
-            return results.tracks;
-        }
-
-        @Override
-        protected void onPostExecute(List<Track> tracks) {
-            // If the results are empty, show the NO_TOP_TRACKS placeholder, else update the adapter with the data
-            if (tracks.isEmpty()) {
-                ViewUtil.initResultsPlaceholder(resultsPlaceholder, true, ViewUtil.PLACEHOLDER_TYPE_NO_TOP_TRACKS);
-            } else {
-                topTracksResultsAdapter.addAll(tracks);
+    public void fetchTopTracksResults(String artistId) {
+        SpotifyApi api = new SpotifyApi();
+        SpotifyService spotify = api.getService();
+        Map<String, Object> options = new HashMap<>();
+        options.put(SpotifyService.COUNTRY, Locale.getDefault().getCountry());
+        spotify.getArtistTopTrack(artistId, options, new Callback<Tracks>() {
+            @Override
+            public void success(final Tracks tracks, Response response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Track> tracksList = tracks.tracks;
+                        // If the results are empty, show the NO_TOP_TRACKS placeholder, else update the adapter with the data
+                        if (tracksList.isEmpty()) {
+                            ViewUtil.initResultsPlaceholder(resultsPlaceholder, true, ViewUtil.PLACEHOLDER_TYPE_NO_TOP_TRACKS);
+                        } else {
+                            topTracksResultsAdapter.addAll(tracksList);
+                        }
+                    }
+                });
             }
-        }
+
+            @Override
+            public void failure(RetrofitError error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewUtil.showNetworkError(getApplicationContext());
+                    }
+                });
+            }
+        });
     }
 
 }

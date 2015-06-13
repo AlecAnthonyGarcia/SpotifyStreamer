@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.calialec.spotifystreamer.R;
 
@@ -43,6 +44,10 @@ public class ViewUtil {
                 break;
         }
         resultsPlaceholder.setVisibility((visible) ? View.VISIBLE : View.GONE);
+    }
+
+    public static void showNetworkError(Context context) {
+        Toast.makeText(context, context.getString(R.string.error_network_failure), Toast.LENGTH_LONG).show();
     }
 
 }

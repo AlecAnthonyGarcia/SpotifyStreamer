@@ -13,4 +13,6 @@
     <string name="tools_text_results_artist_name">Artist Name</string>
     <string name="tools_text_results_track_name">Track Name</string>
     <string name="tools_text_results_album_name">Album Name</string>
+
+    <string name="error_network_failure">There was a network error. Please try again.</string>
 </resources>

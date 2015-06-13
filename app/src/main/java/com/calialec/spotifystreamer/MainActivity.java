@@ -1,7 +1,6 @@
 package com.calialec.spotifystreamer;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -29,6 +28,9 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -70,7 +72,8 @@ public class MainActivity extends ActionBarActivity {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String searchQuery = artistSearchField.getText().toString();
                     if (searchQuery.length() > 0) {
-                        new FetchArtistResultsTask().execute(searchQuery);
+                        // Fetch the related artists from the user input
+                        fetchArtistsResults(searchQuery);
                     }
                 }
                 return false;
@@ -133,29 +136,38 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private class FetchArtistResultsTask extends AsyncTask<String, Void, List<Artist>> {
-
-        @Override
-        protected List<Artist> doInBackground(String... params) {
-            // Fetch the related artists from the user input
-            SpotifyApi api = new SpotifyApi();
-            SpotifyService spotify = api.getService();
-            ArtistsPager results = spotify.searchArtists(params[0]);
-            return results.artists.items;
-        }
-
-        @Override
-        protected void onPostExecute(List<Artist> artists) {
-            artistResultsAdapter.clear();
-            // If the results are empty, show the NO_RESULTS placeholder, else update the adapter with the data
-            if (artists.isEmpty()) {
-                ViewUtil.initResultsPlaceholder(resultsPlaceholder, true, ViewUtil.PLACEHOLDER_TYPE_NO_RESULTS);
-            } else {
-                artistResultsAdapter.addAll(artists);
-                ViewUtil.initResultsPlaceholder(resultsPlaceholder, false, -1);
+    public void fetchArtistsResults(String searchQuery) {
+        SpotifyApi api = new SpotifyApi();
+        SpotifyService spotify = api.getService();
+        spotify.searchArtists(searchQuery, new Callback<ArtistsPager>() {
+            @Override
+            public void success(final ArtistsPager artistsPager, Response response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        artistResultsAdapter.clear();
+                        // If the results are empty, show the NO_RESULTS placeholder, else update the adapter with the data
+                        List<Artist> artists = artistsPager.artists.items;
+                        if (artists.isEmpty()) {
+                            ViewUtil.initResultsPlaceholder(resultsPlaceholder, true, ViewUtil.PLACEHOLDER_TYPE_NO_RESULTS);
+                        } else {
+                            artistResultsAdapter.addAll(artists);
+                            ViewUtil.initResultsPlaceholder(resultsPlaceholder, false, -1);
+                        }
+                    }
+                });
             }
-        }
+
+            @Override
+            public void failure(RetrofitError error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewUtil.showNetworkError(getApplicationContext());
+                    }
+                });
+            }
+        });
     }
 
 }
