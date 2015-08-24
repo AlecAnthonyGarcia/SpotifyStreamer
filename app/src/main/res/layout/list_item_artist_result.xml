@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/results_list_item_height"
+    android:background="@drawable/touch_selector"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -11,6 +12,7 @@
         android:layout_width="@dimen/results_image_size"
         android:layout_height="@dimen/results_image_size"
         android:layout_marginLeft="@dimen/results_image_left_margin"
+        android:background="@android:color/transparent"
         tools:src="@drawable/cat_placeholder_artist" />
 
     <TextView
@@ -18,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/results_text_left_margin"
+        android:background="@android:color/transparent"
         android:gravity="center_vertical"
         android:textColor="@android:color/white"
         tools:text="@string/tools_text_results_artist_name" />

@@ -16,6 +16,9 @@ public class ViewUtil {
     public static final int PLACEHOLDER_TYPE_NO_RESULTS = 1;
     public static final int PLACEHOLDER_TYPE_NO_TOP_TRACKS = 2;
 
+    public static final int MEDIA_PLAYER_UI_STATE_PAUSED = 0;
+    public static final int MEDIA_PLAYER_UI_STATE_PLAYING = 1;
+
     /**
      * Formats the placeholder icon, title, and subtitle based on the type
      *
@@ -48,6 +51,21 @@ public class ViewUtil {
 
     public static void showNetworkError(Context context) {
         Toast.makeText(context, context.getString(R.string.error_network_failure), Toast.LENGTH_LONG).show();
+    }
+
+    public static String formatTrackLapsed(long duration) {
+        return String.format("%d:%02d", 0, duration / 1000);
+    }
+
+    public static void setMediaPlayerUiState(ImageView mediaPlayerControlButton, int state) {
+        switch (state) {
+            case MEDIA_PLAYER_UI_STATE_PAUSED:
+                mediaPlayerControlButton.setImageResource(android.R.drawable.ic_media_play);
+                break;
+            case MEDIA_PLAYER_UI_STATE_PLAYING:
+                mediaPlayerControlButton.setImageResource(android.R.drawable.ic_media_pause);
+                break;
+        }
     }
 
 }

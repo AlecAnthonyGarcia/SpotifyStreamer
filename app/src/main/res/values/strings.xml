@@ -15,4 +15,14 @@
     <string name="tools_text_results_album_name">Album Name</string>
 
     <string name="error_network_failure">There was a network error. Please try again.</string>
+
+    <string name="saved_state_artist_list">savedStateArtistList</string>
+    <string name="saved_state_top_tracks_list">savedStateTopTracksList</string>
+    <string name="extra_artist_id">com.calialec.spotifystreamer.EXTRA_ARTIST_ID</string>
+    <string name="extra_artist_name">com.calialec.spotifystreamer.EXTRA_ARTIST_NAME</string>
+    <string name="extra_track_name">com.calialec.spotifystreamer.EXTRA_TRACK_NAME</string>
+    <string name="extra_album_name">com.calialec.spotifystreamer.EXTRA_ALBUM_NAME</string>
+    <string name="extra_image_url">com.calialec.spotifystreamer.EXTRA_IMAGE_URL</string>
+    <string name="extra_two_pane">com.calialec.spotifystreamer.EXTRA_TWO_PANE</string>
+
 </resources>

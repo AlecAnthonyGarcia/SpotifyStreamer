@@ -28,7 +28,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        />
+
+        <service android:name="com.calialec.spotifystreamer.TrackPlayerService" />
     </application>
 
 </manifest>

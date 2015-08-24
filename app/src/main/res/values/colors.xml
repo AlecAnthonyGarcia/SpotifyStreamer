@@ -4,4 +4,6 @@
     <color name="results_background">#121314</color>
     <color name="results_divider">#2e2f33</color>
     <color name="subtitle_color">#bdbdbe</color>
+    <color name="selector_downstate_color">#4a4b4b</color>
+    <color name="spotify_green">#84bd00</color>
 </resources>
