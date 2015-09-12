@@ -1,17 +1,29 @@
 package com.calialec.spotifystreamer;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.calialec.spotifystreamer.model.ArtistParcelable;
+import com.calialec.spotifystreamer.model.TrackParcelable;
 
-public class MainActivity extends ActionBarActivity implements SearchFragment.SearchFragmentCallback {
+import java.util.ArrayList;
+
+public class MainActivity extends ActionBarActivity implements SearchFragment.SearchFragmentCallback, TopTracksFragment.TopTracksFragmentCallback, TrackPlayerDialogFragment.TrackPlayerDialogFragmentCallback {
 
     private static final String TOPTRACKSFRAGMENT_TAG = "TTFTAG";
     private boolean mTwoPane;
+    private TrackPlayerService trackPlayerService;
+    private Intent trackPlayerServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,4 +87,88 @@ public class MainActivity extends ActionBarActivity implements SearchFragment.Se
             startActivity(topTracksIntent);
         }
     }
+
+    private ServiceConnection trackPlayerServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            TrackPlayerService.TrackPlayerBinder binder = (TrackPlayerService.TrackPlayerBinder) service;
+            trackPlayerService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+
+    @Override
+    public void onTopTracksReceived(ArrayList<TrackParcelable> topTracksList) {
+        if (trackPlayerService != null) {
+            trackPlayerService.setTopTracksList(topTracksList);
+        }
+    }
+
+    @Override
+    public void onTopTrackSelected(int position) {
+        trackPlayerService.playTopTrack(position);
+    }
+
+    @Override
+    public void onProgressChanged(int progress) {
+        trackPlayerService.seekTo(progress);
+    }
+
+    @Override
+    public void onPlaybackChanged() {
+        trackPlayerService.handlePlayback();
+    }
+
+    @Override
+    public TrackParcelable onNextSong() {
+        return trackPlayerService.nextSong();
+    }
+
+    @Override
+    public TrackParcelable onPreviousSong() {
+        return trackPlayerService.previousSong();
+    }
+
+    @Override
+    public void onTrackPlayerControlPlayInitialized(ImageView trackPlayerControlPlay) {
+        if (trackPlayerService != null) {
+            trackPlayerService.setTrackPlayerControlPlay(trackPlayerControlPlay);
+        }
+    }
+
+    @Override
+    public void onTrackPlayerControlSeekBarInitialized(SeekBar trackPlayerControlSeekBar) {
+        if (trackPlayerService != null) {
+            trackPlayerService.setTrackPlayerControlSeekBar(trackPlayerControlSeekBar);
+        }
+    }
+
+    @Override
+    public void onTrackLapsedTvInitialized(TextView trackLapsedTv) {
+        if (trackPlayerService != null) {
+            trackPlayerService.setTrackLapsedTv(trackLapsedTv);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (trackPlayerServiceIntent == null) {
+            trackPlayerServiceIntent = new Intent(this, TrackPlayerService.class);
+            bindService(trackPlayerServiceIntent, trackPlayerServiceConnection, Context.BIND_AUTO_CREATE);
+            startService(trackPlayerServiceIntent);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(trackPlayerServiceIntent);
+        trackPlayerService = null;
+        super.onDestroy();
+    }
+
 }

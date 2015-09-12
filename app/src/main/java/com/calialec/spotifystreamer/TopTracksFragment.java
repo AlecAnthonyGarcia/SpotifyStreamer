@@ -85,7 +85,7 @@ public class TopTracksFragment extends Fragment {
             }
         });
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && !id.equals("")) {
             // Fetch the artist's Top Tracks
             fetchTopTracksResults(id);
         }
