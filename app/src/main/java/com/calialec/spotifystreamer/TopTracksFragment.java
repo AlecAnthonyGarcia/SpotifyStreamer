@@ -132,7 +132,7 @@ public class TopTracksFragment extends Fragment {
                             for (Track track : tracksList) {
                                 topTracksList.add(new TrackParcelable(track));
                             }
-                            topTracksResultsAdapter.addAll(topTracksList);
+                            topTracksResultsAdapter.notifyDataSetChanged();
                             ((TopTracksFragmentCallback) getActivity()).onTopTracksReceived(topTracksList);
                         }
                     }

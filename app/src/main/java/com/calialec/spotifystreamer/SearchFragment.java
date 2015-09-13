@@ -137,7 +137,7 @@ public class SearchFragment extends Fragment {
                             for (Artist artist : artists) {
                                 artistList.add(new ArtistParcelable(artist));
                             }
-                            artistResultsAdapter.addAll(artistList);
+                            artistResultsAdapter.notifyDataSetChanged();
                             ViewUtil.initResultsPlaceholder(resultsPlaceholder, false, -1);
                         }
                     }
