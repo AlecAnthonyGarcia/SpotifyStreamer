@@ -18,6 +18,7 @@
 
     <string name="saved_state_artist_list">savedStateArtistList</string>
     <string name="saved_state_top_tracks_list">savedStateTopTracksList</string>
+    <string name="saved_state_playing_track">savedStatePlayingTrack</string>
     <string name="extra_artist_id">com.calialec.spotifystreamer.EXTRA_ARTIST_ID</string>
     <string name="extra_artist_name">com.calialec.spotifystreamer.EXTRA_ARTIST_NAME</string>
     <string name="extra_track_name">com.calialec.spotifystreamer.EXTRA_TRACK_NAME</string>

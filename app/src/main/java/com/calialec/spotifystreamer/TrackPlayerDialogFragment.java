@@ -17,16 +17,18 @@ public class TrackPlayerDialogFragment extends DialogFragment {
 
     public static final int TRACK_PREVIEW_DURATION = 30000;
 
-    private ImageView trackPlayerControlPlay;
+    public static ImageView trackPlayerControlPlay;
     private ImageView trackPlayerControlNext;
     private ImageView trackPlayerControlPrevious;
-    private SeekBar seekBar;
-    private TextView trackLapsedTv;
+    public static SeekBar seekBar;
+    public static TextView trackLapsedTv;
 
     private TextView artistNameTv;
     private TextView trackNameTv;
     private TextView albumNameTv;
     private ImageView albumImageIv;
+
+    private TrackParcelable playingTrack;
 
     @Nullable
     @Override
@@ -40,13 +42,10 @@ public class TrackPlayerDialogFragment extends DialogFragment {
         albumImageIv = (ImageView) rootView.findViewById(R.id.track_player_album_image_imageview);
 
         trackPlayerControlPlay = (ImageView) rootView.findViewById(R.id.track_player_control_play);
-        ((TrackPlayerDialogFragmentCallback) getActivity()).onTrackPlayerControlPlayInitialized(trackPlayerControlPlay);
         trackPlayerControlNext = (ImageView) rootView.findViewById(R.id.track_player_control_next);
         trackPlayerControlPrevious = (ImageView) rootView.findViewById(R.id.track_player_control_previous);
         seekBar = (SeekBar) rootView.findViewById(R.id.track_player_control_seekbar);
-        ((TrackPlayerDialogFragmentCallback) getActivity()).onTrackPlayerControlSeekBarInitialized(seekBar);
         trackLapsedTv = (TextView) rootView.findViewById(R.id.track_player_track_lapsed_textview);
-        ((TrackPlayerDialogFragmentCallback) getActivity()).onTrackLapsedTvInitialized(trackLapsedTv);
 
         seekBar.setMax(TRACK_PREVIEW_DURATION);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -95,7 +94,12 @@ public class TrackPlayerDialogFragment extends DialogFragment {
             }
         });
 
-        updatePlayerUi(null);
+        if (savedInstanceState != null) {
+            playingTrack = savedInstanceState.getParcelable(getString(R.string.saved_state_playing_track));
+            updatePlayerUi(playingTrack);
+        } else {
+            updatePlayerUi(null);
+        }
 
         return rootView;
     }
@@ -114,6 +118,7 @@ public class TrackPlayerDialogFragment extends DialogFragment {
             albumName = track.albumName;
             trackName = track.trackName;
             imageUrl = track.imageUrl;
+            playingTrack = track;
         } else {
             if (extras != null) {
                 artistName = extras.getString(getString(R.string.extra_artist_name));
@@ -121,6 +126,7 @@ public class TrackPlayerDialogFragment extends DialogFragment {
                 trackName = extras.getString(getString(R.string.extra_track_name));
                 imageUrl = extras.getString(getString(R.string.extra_image_url));
             }
+
         }
         artistNameTv.setText(artistName);
         albumNameTv.setText(albumName);
@@ -128,6 +134,12 @@ public class TrackPlayerDialogFragment extends DialogFragment {
         if (!imageUrl.equals("")) {
             Picasso.with(getActivity()).load(imageUrl).into(albumImageIv);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(getString(R.string.saved_state_playing_track), playingTrack);
+        super.onSaveInstanceState(outState);
     }
 
     public interface TrackPlayerDialogFragmentCallback {
@@ -139,11 +151,6 @@ public class TrackPlayerDialogFragment extends DialogFragment {
 
         TrackParcelable onPreviousSong();
 
-        void onTrackPlayerControlPlayInitialized(ImageView trackPlayerControlPlay);
-
-        void onTrackPlayerControlSeekBarInitialized(SeekBar trackPlayerControlSeekBar);
-
-        void onTrackLapsedTvInitialized(TextView trackLapsedTv);
     }
 
 }

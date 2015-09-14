@@ -9,9 +9,6 @@ import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.calialec.spotifystreamer.model.TrackParcelable;
 
@@ -69,6 +66,8 @@ public class TopTracksActivity extends ActionBarActivity implements TopTracksFra
         public void onServiceConnected(ComponentName name, IBinder service) {
             TrackPlayerService.TrackPlayerBinder binder = (TrackPlayerService.TrackPlayerBinder) service;
             trackPlayerService = binder.getService();
+            if (trackPlayerService.isPlaying())
+                trackPlayerService.updateTrackPlayerUi();
         }
 
         @Override
@@ -125,24 +124,4 @@ public class TopTracksActivity extends ActionBarActivity implements TopTracksFra
         return trackPlayerService.previousSong();
     }
 
-    @Override
-    public void onTrackPlayerControlPlayInitialized(ImageView trackPlayerControlPlay) {
-        if (trackPlayerService != null) {
-            trackPlayerService.setTrackPlayerControlPlay(trackPlayerControlPlay);
-        }
-    }
-
-    @Override
-    public void onTrackPlayerControlSeekBarInitialized(SeekBar trackPlayerControlSeekBar) {
-        if (trackPlayerService != null) {
-            trackPlayerService.setTrackPlayerControlSeekBar(trackPlayerControlSeekBar);
-        }
-    }
-
-    @Override
-    public void onTrackLapsedTvInitialized(TextView trackLapsedTv) {
-        if (trackPlayerService != null) {
-            trackPlayerService.setTrackLapsedTv(trackLapsedTv);
-        }
-    }
 }
